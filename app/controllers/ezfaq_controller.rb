@@ -30,15 +30,15 @@ class EzfaqController < ApplicationController
   include SortHelper
   
   def index
-    @categorized_faqs = Faq.find(:all, :conditions => "project_id = #{@project.id} and category_id is not null and is_valid = true")
-    @not_categorized_faqs = Faq.find(:all, :conditions => "project_id = #{@project.id} and category_id is null and is_valid = true", :order => "question")
+    @categorized_faqs = Faq.find(:all, :conditions => "project_id = #{@project.id} and category_id is not null and is_valid = 't'")
+    @not_categorized_faqs = Faq.find(:all, :conditions => "project_id = #{@project.id} and category_id is null and is_valid = 't'", :order => "question")
     @faq_setting = FaqSetting.find(:first, :conditions => "project_id = #{@project.id}")
   end
   
   def list_invalid_faqs
     sort_init "#{Faq.table_name}.updated_on", "desc"
     sort_update    
-    @invalid_faqs = Faq.find(:all, :conditions => "project_id = #{@project.id} and is_valid = false", :order => sort_clause)
+    @invalid_faqs = Faq.find(:all, :conditions => "project_id = #{@project.id} and is_valid = 'f'", :order => sort_clause)
     
     render(:template => 'ezfaq/list_invalid_faqs.html.erb', :layout => !request.xhr?)
   end
